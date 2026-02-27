@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Resin Color Additive Calculator</title>
+
+<style>
+body {font-family:system-ui;margin:0;padding:16px;background:#f6f7f9;}
+.card {max-width:620px;margin:auto;background:#fff;padding:16px;border-radius:14px;box-shadow:0 6px 18px rgba(0,0,0,.08);}
+h1 {font-size:18px;margin-bottom:12px;}
+label {font-size:13px;margin-top:12px;display:block;}
+select,input {width:100%;padding:10px;font-size:16px;border-radius:8px;border:1px solid #ccc;margin-top:4px;}
+.grid2 {display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:560px){.grid2{grid-template-columns:1fr;}}
+.result {margin-top:16px;padding:14px;border-radius:12px;background:#0b5;color:#fff;}
+.big {font-size:28px;font-weight:bold;}
+.details {margin-top:10px;padding:12px;border-radius:12px;background:#eef3ff;}
+button {margin-top:12px;width:100%;padding:10px;font-size:16px;border-radius:8px;border:none;background:#1f6feb;color:#fff;}
+.muted {font-size:12px;margin-top:10px;color:#666;}
+</style>
+</head>
+
+<body>
+<div class="card">
+<h1>Resin → Color Additive Calculator</h1>
+
+<div class="grid2">
+<div>
+<label>Resin (lb) – Dropdown</label>
+<select id="resinSelect"></select>
+</div>
+<div>
+<label>Resin (lb) – Custom</label>
+<input id="resinCustom" placeholder="Enter custom lb"/>
+</div>
+</div>
+
+<div class="grid2">
+<div>
+<label>Color % – Dropdown</label>
+<select id="pctSelect"></select>
+</div>
+<div>
+<label>Color % – Custom</label>
+<input id="pctCustom" placeholder="Enter custom %"/>
+</div>
+</div>
+
+<div class="result">
+<div>Color to Add</div>
+<div class="big" id="colorOutput">0 g</div>
+<div id="summary"></div>
+</div>
+
+<div class="details">
+<div>Resin (g): <b id="resinG">0</b></div>
+<div>Color (g): <b id="colorG">0</b></div>
+<div>Total Mix (g): <b id="totalG">0</b></div>
+</div>
+
+<button id="copyBtn">Copy Result</button>
+
+<div class="muted">
+Formula: Color(g) = Resin(lb) × 453.59237 × (Color% / 100)<br>
+Add-on method (NOT % of final mix)
+</div>
+
+</div>
+
+<script>
+const LB_TO_G = 453.59237;
+
+const resinOptions = [20,25,30,35,40,45,50];
+const pctOptions = [0.5,1,1.5,2,2.5,3,3.5,4,4.5,5];
+
+const resinSelect = document.getElementById("resinSelect");
+const pctSelect = document.getElementById("pctSelect");
+const resinCustom = document.getElementById("resinCustom");
+const pctCustom = document.getElementById("pctCustom");
+
+const colorOutput = document.getElementById("colorOutput");
+const resinGOut = document.getElementById("resinG");
+const colorGOut = document.getElementById("colorG");
+const totalGOut = document.getElementById("totalG");
+const summary = document.getElementById("summary");
+const copyBtn = document.getElementById("copyBtn");
+
+/* ---------- Initialize Dropdowns with 0 Default ---------- */
+
+function initDropdown(select, options, unit="") {
+select.innerHTML = "";
+let defaultOption = document.createElement("option");
+defaultOption.value = "";
+defaultOption.textContent = "Select...";
+select.appendChild(defaultOption);
+
+options.forEach(val=>{
+let opt = document.createElement("option");
+opt.value = val;
+opt.textContent = val + unit;
+select.appendChild(opt);
+});
+}
+
+initDropdown(resinSelect,resinOptions," lb");
+initDropdown(pctSelect,pctOptions,"%");
+
+/* ---------- Logic ---------- */
+
+function getResin(){
+let custom = parseFloat(resinCustom.value);
+if(!isNaN(custom) && custom>0) return custom;
+let sel = parseFloat(resinSelect.value);
+if(!isNaN(sel)) return sel;
+return 0;
+}
+
+function getPct(){
+let custom = parseFloat(pctCustom.value);
+if(!isNaN(custom) && custom>=0) return custom;
+let sel = parseFloat(pctSelect.value);
+if(!isNaN(sel)) return sel;
+return 0;
+}
+
+function calculate(){
+let lb = getResin();
+let pct = getPct();
+
+if(lb<=0 || pct<=0){
+colorOutput.textContent = "0 g";
+resinGOut.textContent = "0";
+colorGOut.textContent = "0";
+totalGOut.textContent = "0";
+summary.textContent = "";
+return;
+}
+
+let resinG = lb * LB_TO_G;
+let colorG = resinG * (pct/100);
+let totalG = resinG + colorG;
+
+resinGOut.textContent = resinG.toFixed(0);
+colorGOut.textContent = colorG.toFixed(1);
+totalGOut.textContent = totalG.toFixed(1);
+colorOutput.textContent = colorG.toFixed(1) + " g";
+summary.textContent = lb + " lb @ " + pct + "%";
+}
+
+/* ---------- Auto Reset Behavior ---------- */
+
+// If custom typed → reset dropdown
+resinCustom.addEventListener("input",()=>{
+if(resinCustom.value !== "") resinSelect.value = "";
+calculate();
+});
+
+pctCustom.addEventListener("input",()=>{
+if(pctCustom.value !== "") pctSelect.value = "";
+calculate();
+});
+
+// If dropdown selected → clear custom
+resinSelect.addEventListener("change",()=>{
+if(resinSelect.value !== "") resinCustom.value="";
+calculate();
+});
+
+pctSelect.addEventListener("change",()=>{
+if(pctSelect.value !== "") pctCustom.value="";
+calculate();
+});
+
+copyBtn.addEventListener("click",()=>{
+let text = colorOutput.textContent;
+navigator.clipboard.writeText(text);
+});
+
+</script>
+</body>
+</html>
