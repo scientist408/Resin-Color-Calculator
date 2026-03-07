@@ -15,33 +15,80 @@
   h1 { font-size: 18px; margin: 0 0 12px; }
   h2 { font-size: 16px; margin: 0 0 10px; }
   label { display:block; font-size: 13px; margin: 12px 0 6px; color:#333; }
-  select, input { width: 100%; font-size: 16px; padding: 12px; border-radius: 10px; border: 1px solid #cfd6df; background: #fff; box-sizing: border-box; }
+  select, input {
+    width: 100%;
+    font-size: 16px;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #cfd6df;
+    background: #fff;
+    box-sizing: border-box;
+  }
   .grid2 { display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   @media(max-width: 560px){ .grid2{ grid-template-columns: 1fr; } }
 
   .muted { font-size: 12px; color: #666; margin-top: 10px; line-height: 1.35; }
-  button { width: 100%; margin-top: 12px; padding: 12px; border: 0; border-radius: 10px; font-size: 16px; background: #1f6feb; color: #fff; }
+  button {
+    width: 100%;
+    margin-top: 12px;
+    padding: 12px;
+    border: 0;
+    border-radius: 10px;
+    font-size: 16px;
+    background: #1f6feb;
+    color: #fff;
+    cursor: pointer;
+  }
   button:active { transform: scale(.99); }
 
-  /* GENERAL output (green) */
-  .result-green { margin-top: 14px; padding: 14px; border-radius: 12px; background: #0b5; color: #fff; }
+  .result-green {
+    margin-top: 14px;
+    padding: 14px;
+    border-radius: 12px;
+    background: #0b5;
+    color: #fff;
+  }
   .result-green .small { font-size: 12px; opacity: .95; }
   .result-green .big { font-size: 28px; font-weight: 800; margin-top: 6px; }
 
-  /* AXIUM output (purple, different look) */
-  .result-purple { margin-top: 14px; padding: 14px; border-radius: 12px; background: #5b2cff; color: #fff; border: 1px solid rgba(255,255,255,.25); }
+  .result-purple {
+    margin-top: 14px;
+    padding: 14px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #5b2cff, #7a4dff);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,.2);
+  }
   .result-purple .small { font-size: 12px; opacity: .95; }
   .result-purple .big { font-size: 30px; font-weight: 900; margin-top: 6px; letter-spacing: .2px; }
 
-  .details { margin-top: 10px; padding: 12px; border-radius: 12px; background: #eef3ff; border: 1px solid #d7e3ff; }
+  .details {
+    margin-top: 10px;
+    padding: 12px;
+    border-radius: 12px;
+    background: #eef3ff;
+    border: 1px solid #d7e3ff;
+  }
   .details h3 { margin: 0 0 8px; font-size: 14px; }
-  .kv { display:grid; grid-template-columns: 1fr auto; gap: 6px 12px; font-size: 14px; }
+  .kv {
+    display:grid;
+    grid-template-columns: 1fr auto;
+    gap: 6px 12px;
+    font-size: 14px;
+  }
   .kv .k { color:#233; }
   .kv .v { font-weight: 800; color:#111; }
 
-  .badge { display:inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px; background:#111; color:#fff; margin-left: 8px; }
+  .badge {
+    display:inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background:#111;
+    color:#fff;
+    margin-left: 8px;
+  }
   .subtle { font-size: 12px; color:#556; margin-top: 6px; }
-
   .divider { height: 1px; background: #eef0f4; margin: 12px 0; }
 </style>
 </head>
@@ -50,18 +97,18 @@
 <div class="wrap">
   <div class="grid">
 
-    <!-- LEFT: AXIUM 25lb RECIPE -->
+    <!-- LEFT PANEL -->
     <div class="card">
       <h2>AXIUM-25lb RECIPE <span class="badge">Fixed 25 lb</span></h2>
       <div class="subtle">
-        Color grams are rounded <b>down</b> to the previous <b>50 g</b>.
+        Resin is fixed at 25 lb. Recipe output follows AXIUM rounding rule.
       </div>
 
-      <label for="axPctSelect">Color % (0.5% to 5.0%)</label>
+      <label for="axPctSelect">Color % (0.5% to 8.0%)</label>
       <select id="axPctSelect"></select>
 
       <div class="result-purple" aria-live="polite">
-        <div class="small">Color to Add (rounded down to 50 g)</div>
+        <div class="small">AXIUM Recipe Color to Add</div>
         <div class="big" id="axColorOut">—</div>
         <div class="small" id="axSummaryOut"></div>
       </div>
@@ -71,20 +118,21 @@
         <div class="kv">
           <div class="k">Resin (grams)</div><div class="v" id="axResinGOut">—</div>
           <div class="k">Calculated color (g)</div><div class="v" id="axRawColorGOut">—</div>
-          <div class="k">Rounded recipe color (g)</div><div class="v" id="axRoundedGOut">—</div>
+          <div class="k">AXIUM recipe color (g)</div><div class="v" id="axRoundedGOut">—</div>
         </div>
       </div>
 
       <button id="axCopyBtn" type="button">Copy AXIUM Result</button>
 
       <div class="muted">
-        Resin fixed at <b>25 lb</b>.<br/>
-        Raw formula: color(g) = 25 × 453.59237 × (pct/100).<br/>
-        Rounding rule: <b>rounded = floor(raw/50) × 50</b>
+        Rule:<br/>
+        For 0.5% to 3.5%: use calculated value rounded down to previous 50 g.<br/>
+        For 4.0% to 8.0%: use direct recipe value = % × 100 g.<br/><br/>
+        Examples: 4% = 400 g, 4.5% = 450 g, 5% = 500 g, 5.5% = 550 g.
       </div>
     </div>
 
-    <!-- RIGHT: GENERAL CALCULATOR -->
+    <!-- RIGHT PANEL -->
     <div class="card">
       <h1>Resin → Color Additive Calculator- GENERAL</h1>
 
@@ -143,61 +191,66 @@
 <script>
   const LB_TO_G = 453.59237;
 
-  /* -------------------- GENERAL -------------------- */
-  const resinOptions = [20,25,30,35,40,45,50];
-  const pctOptions = [0.5,1,1.5,2,2.5,3,3.5,4,4.5,5];
+  /* ---------------- GENERAL CALCULATOR ---------------- */
+  const resinOptions = [20, 25, 30, 35, 40, 45, 50];
+  const pctOptions = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5];
 
   const resinSelect = document.getElementById("resinSelect");
-  const pctSelect   = document.getElementById("pctSelect");
+  const pctSelect = document.getElementById("pctSelect");
   const resinCustom = document.getElementById("resinCustom");
-  const pctCustom   = document.getElementById("pctCustom");
+  const pctCustom = document.getElementById("pctCustom");
 
   const colorOutput = document.getElementById("colorOutput");
-  const resinGOut   = document.getElementById("resinG");
-  const colorGOut   = document.getElementById("colorG");
-  const totalGOut   = document.getElementById("totalG");
-  const summary     = document.getElementById("summary");
-  const copyBtn     = document.getElementById("copyBtn");
+  const resinGOut = document.getElementById("resinG");
+  const colorGOut = document.getElementById("colorG");
+  const totalGOut = document.getElementById("totalG");
+  const summary = document.getElementById("summary");
+  const copyBtn = document.getElementById("copyBtn");
 
-  function initDropdown(select, options, unit="") {
+  function initDropdown(select, options, unit = "") {
     select.innerHTML = "";
-    const d = document.createElement("option");
-    d.value = "";
-    d.textContent = "Select...";
-    select.appendChild(d);
+
+    const defaultOption = document.createElement("option");
+    defaultOption.value = "";
+    defaultOption.textContent = "Select...";
+    select.appendChild(defaultOption);
 
     options.forEach(val => {
       const opt = document.createElement("option");
-      opt.value = String(val);        // IMPORTANT: value numeric, not "3%"
+      opt.value = String(val);
       opt.textContent = `${val}${unit}`;
       select.appendChild(opt);
     });
   }
 
-  function parseNum(raw){
+  function parseNum(raw) {
     if (raw === null || raw === undefined) return NaN;
-    const cleaned = String(raw).replace('%','').trim();
+    const cleaned = String(raw).replace("%", "").trim();
     const n = Number(cleaned);
     return Number.isFinite(n) ? n : NaN;
   }
 
-  function getResinLb(){
-    const c = parseNum(resinCustom.value);
-    if (Number.isFinite(c) && c > 0) return c;
-    const s = parseNum(resinSelect.value);
-    if (Number.isFinite(s) && s > 0) return s;
+  function getResinLb() {
+    const custom = parseNum(resinCustom.value);
+    if (Number.isFinite(custom) && custom > 0) return custom;
+
+    const selected = parseNum(resinSelect.value);
+    if (Number.isFinite(selected) && selected > 0) return selected;
+
     return 0;
   }
 
-  function getPct(){
-    const c = parseNum(pctCustom.value);
-    if (Number.isFinite(c) && c > 0) return c;
-    const s = parseNum(pctSelect.value);
-    if (Number.isFinite(s) && s > 0) return s;
+  function getPct() {
+    const custom = parseNum(pctCustom.value);
+    if (Number.isFinite(custom) && custom > 0) return custom;
+
+    const selected = parseNum(pctSelect.value);
+    if (Number.isFinite(selected) && selected > 0) return selected;
+
     return 0;
   }
 
-  function resetGeneralOutputs(){
+  function resetGeneralOutputs() {
     colorOutput.textContent = "0 g";
     resinGOut.textContent = "0";
     colorGOut.textContent = "0";
@@ -205,17 +258,17 @@
     summary.textContent = "";
   }
 
-  function calcGeneral(){
+  function calcGeneral() {
     const lb = getResinLb();
     const pct = getPct();
 
-    if (lb <= 0 || pct <= 0){
+    if (lb <= 0 || pct <= 0) {
       resetGeneralOutputs();
       return null;
     }
 
     const resinG = lb * LB_TO_G;
-    const colorG = resinG * (pct/100);
+    const colorG = resinG * (pct / 100);
     const totalG = resinG + colorG;
 
     colorOutput.textContent = `${colorG.toFixed(1)} g`;
@@ -228,16 +281,15 @@
     return { lb, pct, resinG, colorG, totalG };
   }
 
-  // Init GENERAL dropdowns (default to Select...)
   initDropdown(resinSelect, resinOptions, " lb");
   initDropdown(pctSelect, pctOptions, "%");
   resetGeneralOutputs();
 
-  // Auto-reset behavior to prevent confusion
   resinCustom.addEventListener("input", () => {
     if (resinCustom.value.trim() !== "") resinSelect.value = "";
     calcGeneral();
   });
+
   pctCustom.addEventListener("input", () => {
     if (pctCustom.value.trim() !== "") pctSelect.value = "";
     calcGeneral();
@@ -247,6 +299,7 @@
     if (resinSelect.value !== "") resinCustom.value = "";
     calcGeneral();
   });
+
   pctSelect.addEventListener("change", () => {
     if (pctSelect.value !== "") pctCustom.value = "";
     calcGeneral();
@@ -255,36 +308,43 @@
   copyBtn.addEventListener("click", async () => {
     const r = calcGeneral();
     if (!r) return;
+
     const text =
-      `GENERAL\nResin: ${r.lb} lb (${r.resinG.toFixed(0)} g)\n` +
+      `GENERAL\n` +
+      `Resin: ${r.lb} lb (${r.resinG.toFixed(0)} g)\n` +
       `Color: ${r.pct}% → ADD ${r.colorG.toFixed(1)} g\n` +
       `Total mix: ${r.totalG.toFixed(1)} g`;
-    try { await navigator.clipboard.writeText(text); } catch { alert(text); }
+
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      alert(text);
+    }
   });
 
-
-  /* -------------------- AXIUM 25lb RECIPE -------------------- */
+  /* ---------------- AXIUM 25lb RECIPE ---------------- */
   const AX_LB = 25;
 
-  const axPctSelect   = document.getElementById("axPctSelect");
-  const axColorOut    = document.getElementById("axColorOut");
-  const axSummaryOut  = document.getElementById("axSummaryOut");
-  const axResinGOut   = document.getElementById("axResinGOut");
-  const axRawColorGOut= document.getElementById("axRawColorGOut");
+  const axPctSelect = document.getElementById("axPctSelect");
+  const axColorOut = document.getElementById("axColorOut");
+  const axSummaryOut = document.getElementById("axSummaryOut");
+  const axResinGOut = document.getElementById("axResinGOut");
+  const axRawColorGOut = document.getElementById("axRawColorGOut");
   const axRoundedGOut = document.getElementById("axRoundedGOut");
-  const axCopyBtn     = document.getElementById("axCopyBtn");
+  const axCopyBtn = document.getElementById("axCopyBtn");
 
-  // Build 0.5 to 5.0 by 0.5 increments
   const axPctOptions = [];
-  for (let p=0.5; p<=5.0001; p+=0.5) axPctOptions.push(Number(p.toFixed(1)));
+  for (let p = 0.5; p <= 8.0001; p += 0.5) {
+    axPctOptions.push(Number(p.toFixed(1)));
+  }
 
   initDropdown(axPctSelect, axPctOptions, "%");
 
-  function floorToPrev50(x){
-    return Math.floor(x / 50) * 50; // "previous 50"
+  function floorToPrev50(x) {
+    return Math.floor(x / 50) * 50;
   }
 
-  function resetAxiumOutputs(){
+  function resetAxiumOutputs() {
     axColorOut.textContent = "—";
     axSummaryOut.textContent = "";
     axResinGOut.textContent = "—";
@@ -292,24 +352,32 @@
     axRoundedGOut.textContent = "—";
   }
 
-  function calcAxium(){
+  function calcAxium() {
     const pct = parseNum(axPctSelect.value);
-    if (!Number.isFinite(pct) || pct <= 0){
+
+    if (!Number.isFinite(pct) || pct <= 0) {
       resetAxiumOutputs();
       return null;
     }
 
-    const resinG = AX_LB * LB_TO_G;             // fixed
-    const rawColorG = resinG * (pct/100);       // raw grams
-    const rounded = floorToPrev50(rawColorG);   // rounded down to previous 50
+    const resinG = AX_LB * LB_TO_G;
+    const rawColorG = resinG * (pct / 100);
 
-    axColorOut.textContent = `${rounded.toFixed(0)} g`;
-    axSummaryOut.textContent = `25 lb @ ${pct}% → rounded recipe`;
+    let recipeColor;
+    if (pct <= 3.5) {
+      recipeColor = floorToPrev50(rawColorG);
+    } else {
+      recipeColor = pct * 100;
+    }
+
+    axColorOut.textContent = `${recipeColor.toFixed(0)} g`;
+    axSummaryOut.textContent = `25 lb @ ${pct}% → AXIUM recipe`;
+
     axResinGOut.textContent = resinG.toFixed(0);
     axRawColorGOut.textContent = rawColorG.toFixed(1);
-    axRoundedGOut.textContent = `${rounded.toFixed(0)} g`;
+    axRoundedGOut.textContent = `${recipeColor.toFixed(0)} g`;
 
-    return { pct, resinG, rawColorG, rounded };
+    return { pct, resinG, rawColorG, recipeColor };
   }
 
   axPctSelect.addEventListener("change", calcAxium);
@@ -317,10 +385,17 @@
   axCopyBtn.addEventListener("click", async () => {
     const r = calcAxium();
     if (!r) return;
+
     const text =
-      `AXIUM-25lb RECIPE\nResin: 25 lb (${r.resinG.toFixed(0)} g)\n` +
-      `Color: ${r.pct}% → Raw ${r.rawColorG.toFixed(1)} g → Recipe ${r.rounded.toFixed(0)} g (rounded down to 50)`;
-    try { await navigator.clipboard.writeText(text); } catch { alert(text); }
+      `AXIUM-25lb RECIPE\n` +
+      `Resin: 25 lb (${r.resinG.toFixed(0)} g)\n` +
+      `Color: ${r.pct}% → Raw ${r.rawColorG.toFixed(1)} g → Recipe ${r.recipeColor.toFixed(0)} g`;
+
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      alert(text);
+    }
   });
 
   resetAxiumOutputs();
